@@ -3,8 +3,6 @@ name: Docker Build and Publish and Deploy to DeployAja
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io/nawfalrakhmansah/postal-app
@@ -44,22 +42,29 @@ jobs:
     needs: build-and-push
     permissions:
       contents: read
-      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🔍 SAFETY CHECK (demo saver)
+      - name: Verify DeployAja config exists
+        run: |
+          ls -la
+          cat deploy.yaml
+
       - name: DeployAja Plan
         uses: deployaja/deployaja-cli@v0.0.10
         with:
           command: plan
+          config-file: deploy.yaml
           api-token: ${{ secrets.DEPLOYAJA_TOKEN }}
 
       - name: DeployAja Deploy
         uses: deployaja/deployaja-cli@v0.0.10
         with:
           command: deploy
+          config-file: deploy.yaml
           api-token: ${{ secrets.DEPLOYAJA_TOKEN }}
           additional-args: --set container.image=${{ env.REGISTRY }}:latest
 
