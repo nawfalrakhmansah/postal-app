@@ -11,5 +11,9 @@ resources:
 env:
   - name: NODE_ENV
     value: production
- 
+
+dependencies:
+  - type: POSTGRES
+    name: POSTGRES
+
 domain: postal.deployaja.id
