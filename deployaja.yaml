@@ -2,6 +2,9 @@ name: postal
 version: 1.0.0
 description: Postal mail server application
 
+# ===============================
+# INIT CONTAINER (SETUP DATABASE)
+# ===============================
 initContainers:
   - name: postal-init
     image: ghcr.io/nawfalrakhmansah/postal-app:latest
@@ -11,7 +14,7 @@ initContainers:
       - -c
       - |
         until nc -z postgres.postal.svc.cluster.local 5432; do
-          echo "Waiting for DB..."
+          echo "Waiting for PostgreSQL..."
           sleep 5
         done
         postal initialize
@@ -27,16 +30,20 @@ initContainers:
       - name: POSTGRES_DB
         value: postal_db
 
+# ===============================
+# MAIN CONTAINER (WEB SERVER)
+# ===============================
 container:
   image: ghcr.io/nawfalrakhmansah/postal-app:latest
   imagePullPolicy: Always
   command: ["postal", "web-server"]
-  ports:
-    - 3000
-  resources:
-    cpu: 500m
-    memory: 512Mi
+
+  # ⚠️ WAJIB FLAT (DEPLOYAJA FORMAT)
+  port: 3000
+  cpu: 500m
+  memory: 512Mi
   replicas: 1
+
   env:
     - name: NODE_ENV
       value: production
@@ -51,12 +58,21 @@ container:
     - name: POSTGRES_DB
       value: postal_db
 
+# ===============================
+# DATABASE DEPENDENCY
+# ===============================
 dependencies:
   - type: POSTGRES
     name: postgres
     version: "15"
 
+# ===============================
+# PRIVATE IMAGE (GHCR)
+# ===============================
 imagePullSecrets:
   - name: ghcr-secret
 
+# ===============================
+# PUBLIC DOMAIN
+# ===============================
 domain: postal.deployaja.id
