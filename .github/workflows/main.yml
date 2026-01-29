@@ -61,9 +61,7 @@ jobs:
         with:
           command: deploy
           api-token: ${{ secrets.DEPLOYAJA_TOKEN }}
-          additional-args: >
-            --set container.image=${{ env.REGISTRY }}:latest
-            --set imagePullSecrets[0].name=ghcr-secret
+          additional-args: --set container.image=${{ env.REGISTRY }}:latest
 
       - name: DeployAja Status
         uses: deployaja/deployaja-cli@v0.0.10
