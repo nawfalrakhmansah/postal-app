@@ -2,13 +2,11 @@ name: postal
 version: 1.0.0
 description: Postal mail server application
 
-# ===============================
-# GLOBAL RESOURCE CONFIG (WAJIB)
-# ===============================
-cpu: 500m
-memory: 512Mi
-replicas: 1
+resources:
+  cpu: "500m"
+  memory: "512Mi"
 
+replicas: 1
 # ===============================
 # INIT CONTAINER
 # ===============================
