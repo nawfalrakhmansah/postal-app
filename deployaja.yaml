@@ -14,6 +14,7 @@ env:
 
 dependencies:
   - type: POSTGRES
-    name: POSTGRES
+    name: postgres
+    version: "15"
 
 domain: postal.deployaja.id
