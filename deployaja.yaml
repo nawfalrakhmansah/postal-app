@@ -1,13 +1,34 @@
 name: postal
 version: 1.0.0
-description: My awesome application
+description: Postal mail server application
+
+# InitContainer untuk inisialisasi DB
+initContainers:
+  - name: postal-init
+    image: ghcr.io/nawfalrakhmansah/postal-app:latest
+    command: ["postal", "initialize"]
+    env:
+      - name: POSTGRES_HOST
+        value: postgres.postal.svc.cluster.local
+      - name: POSTGRES_PORT
+        value: "5432"
+      - name: POSTGRES_USER
+        value: postal_user
+      - name: POSTGRES_PASSWORD
+        value: secret_password
+      - name: POSTGRES_DB
+        value: postal_db
+    imagePullPolicy: IfNotPresent
+
+# Container utama Postal
 container:
   image: ghcr.io/nawfalrakhmansah/postal-app:latest
   port: 3000
-resources:
-  cpu: 500m
-  memory: 512Mi
-  replicas: 1
+  command: ["postal", "web-server"]
+  resources:
+    cpu: 500m
+    memory: 512Mi
+    replicas: 1
 env:
   - name: NODE_ENV
     value: production
@@ -16,5 +37,8 @@ dependencies:
   - type: POSTGRES
     name: postgres
     version: "15"
+
+imagePullSecrets:
+  - name: ghcr-secret
 
 domain: postal.deployaja.id
