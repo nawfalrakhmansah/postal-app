@@ -3,7 +3,14 @@ version: 1.0.0
 description: Postal mail server application
 
 # ===============================
-# INIT CONTAINER (SETUP DATABASE)
+# GLOBAL RESOURCE CONFIG (WAJIB)
+# ===============================
+cpu: 500m
+memory: 512Mi
+replicas: 1
+
+# ===============================
+# INIT CONTAINER
 # ===============================
 initContainers:
   - name: postal-init
@@ -31,18 +38,13 @@ initContainers:
         value: postal_db
 
 # ===============================
-# MAIN CONTAINER (WEB SERVER)
+# MAIN CONTAINER
 # ===============================
 container:
   image: ghcr.io/nawfalrakhmansah/postal-app:latest
   imagePullPolicy: Always
   command: ["postal", "web-server"]
-
-  # ⚠️ WAJIB FLAT (DEPLOYAJA FORMAT)
   port: 3000
-  cpu: 500m
-  memory: 512Mi
-  replicas: 1
 
   env:
     - name: NODE_ENV
@@ -59,7 +61,7 @@ container:
       value: postal_db
 
 # ===============================
-# DATABASE DEPENDENCY
+# DATABASE
 # ===============================
 dependencies:
   - type: POSTGRES
@@ -67,12 +69,12 @@ dependencies:
     version: "15"
 
 # ===============================
-# PRIVATE IMAGE (GHCR)
+# GHCR PRIVATE IMAGE
 # ===============================
 imagePullSecrets:
   - name: ghcr-secret
 
 # ===============================
-# PUBLIC DOMAIN
+# DOMAIN
 # ===============================
 domain: postal.deployaja.id
