@@ -2,7 +2,7 @@ name: postal
 version: 1.0.0
 description: My awesome application
 container:
-  image: postal-app:latest
+  image: ghcr.io/nawfalrakhmansah/postal-app:latest
   port: 3000
 resources:
   cpu: 500m
